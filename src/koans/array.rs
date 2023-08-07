@@ -24,7 +24,7 @@ fn array_empty() {
 #[allow(const_err)]
 fn out_of_index() {
     let arr: [&'static str; 5] = ["rust", "is", "mostly", "for", "nerds"];
-    arr[4];
+    arr.get(5).unwrap();
 }
 
 // Elements can be replaced in an array at a certain index.
@@ -73,7 +73,7 @@ fn array_filter_map() {
     let arr: [u8; 5] = [2, 1, 2, 1, 2];
     let mut iterator = arr
         .iter()
-        .filter_map(|&x| if x == 1 { Some(3) } else { None });
+        .filter_map(|&x| if x == 1 { Some(x + 2) } else { None });
     assert!(iterator.next() == Some(3));
     assert!(iterator.next() == Some(3));
     assert!(iterator.next().is_none());
@@ -84,7 +84,8 @@ fn array_filter_map() {
 fn complex_array_filter_map() {
     let arr: [u64; 4] = [4, 8, 16, 32];
     let mut iterator = arr.iter().filter_map(|&x| {
-        if (x as f64).sqrt().floor() == (x as f64).sqrt() {
+        let sqrt_x = (x as f64).sqrt();
+        if sqrt_x.floor() == sqrt_x {
             Some((x as f64).sqrt() as u64)
         } else {
             None
@@ -99,9 +100,10 @@ fn complex_array_filter_map() {
 #[test]
 fn for_loops() {
     let arr: [u64; 3] = [1, 2, 3];
-    let y: u64 = 1;
+    let mut y: u64 = 1;
     for x in &arr {
         assert!(*x == y);
+        y += 1;
         continue;
     }
 }
@@ -112,8 +114,9 @@ fn for_loops_two() {
     let words: [&'static str; 3] = ["I", "love", "Rust"];
     let mut sentence: String = String::new();
     for word in words.iter() {
-        sentence += word;
+        sentence.push_str(" ");
+        sentence.push_str(word);
     }
-    println!("{:?}", sentence);
-    assert!(sentence == "I love Rust".to_string());
+    let result = sentence.trim();
+    assert!(result == "I love Rust".to_string());
 }
