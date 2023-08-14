@@ -76,7 +76,8 @@ fn slicing_the_string() {
 #[should_panic]
 fn slicing_the_byte() {
     let dog = "忠犬ハチ公";
-    let slice = &dog[0..2];
+    let slice = &dog[0..2].to_string();
+    assert!(slice == &"忠犬".to_string());
 }
 
 // You can truncate Strings
